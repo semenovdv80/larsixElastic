@@ -29,7 +29,7 @@ class SearchController extends Controller
                 'analyzer' => [
                   'my_custom_analyzer' => [
                     'type' => 'custom',
-                    'tokenizer' => 'whitespace',
+                    'tokenizer' => 'russian',
                     'filter' => ['lowercase', 'stop', 'kstem']
                   ]
                 ]
@@ -57,7 +57,6 @@ class SearchController extends Controller
     }
 
 
-
     public function indexing()
     {
         Search::indexing();
@@ -68,7 +67,7 @@ class SearchController extends Controller
         $client = Search::client();
         $params = [
           'index' => 'lot',
-          'id'    => $id
+          'id' => $id
         ];
 
         $response = $client->get($params);
@@ -93,11 +92,24 @@ class SearchController extends Controller
 
         $params = [
           'index' => 'lot',
-          'body'  => [
+          'body' => [
             'query' => [
               'bool' => [
+                'must' => [
+                  //['match' => ['name_ru' => 'Первыйmm лотbb']],
+                  //['match' => ['description' => 'moy zabor']],
+                ],
+                'must_not' => [
+                  ['match' => ['name_ru' => 'Первый1']],
+                  ['match' => ['description' => 'zabor1']],
+                ],
+                'should' => [
+                  ['match' => ['name_ru' => 'Первому']],
+                  //['match' => ['description' => 'zabor']],
+                ],
                 'filter' => [
-                  'term' => [ 'description' => 'moy' ]
+                  //['term' => ['description' => 'moy']],
+                  //['range' => ['publish_date' => [ "gte" => "2015-01-01" ]]]
                 ],
               ]
             ]
