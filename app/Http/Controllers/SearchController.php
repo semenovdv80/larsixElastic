@@ -17,46 +17,23 @@ class SearchController extends Controller
         $this->client = Search::client();
     }
 
+    /**
+     * Create index
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function createIndex()
     {
-        $params = [
-          'index' => 'lot',
-          'body' => [
-            'settings' => [
-              'number_of_shards' => 1,
-              'number_of_replicas' => 0,
-              'analysis' => [
-                'analyzer' => [
-                  'my_custom_analyzer' => [
-                    'type' => 'custom',
-                    'tokenizer' => 'russian',
-                    'filter' => ['lowercase', 'stop', 'kstem']
-                  ]
-                ]
-              ]
-            ],
-            'mappings' => [
-              'properties' => [
-                'name_ru' => [
-                  'type' => 'text',
-                  'analyzer' => 'my_custom_analyzer',
-                ],
-                'description' => [
-                  'type' => 'text',
-                  'analyzer' => 'my_custom_analyzer',
-                ]
-              ]
-            ]
-          ]
-        ];
-        $this->client->indices()->create($params);
+        $result = Search::createIndex();
 
         return response()->json([
-          'success' => true
+            'success' => $result
         ]);
     }
 
-
+    /**
+     * Indexing records
+     */
     public function indexing()
     {
         Search::indexing();
@@ -66,8 +43,8 @@ class SearchController extends Controller
     {
         $client = Search::client();
         $params = [
-          'index' => 'lot',
-          'id' => $id
+            'index' => 'lot',
+            'id' => $id
         ];
 
         $response = $client->get($params);
@@ -91,29 +68,29 @@ class SearchController extends Controller
         */
 
         $params = [
-          'index' => 'lot',
-          'body' => [
-            'query' => [
-              'bool' => [
-                'must' => [
-                  //['match' => ['name_ru' => 'Первыйmm лотbb']],
-                  //['match' => ['description' => 'moy zabor']],
-                ],
-                'must_not' => [
-                  ['match' => ['name_ru' => 'Первый1']],
-                  ['match' => ['description' => 'zabor1']],
-                ],
-                'should' => [
-                  ['match' => ['name_ru' => 'Первому']],
-                  //['match' => ['description' => 'zabor']],
-                ],
-                'filter' => [
-                  //['term' => ['description' => 'moy']],
-                  //['range' => ['publish_date' => [ "gte" => "2015-01-01" ]]]
-                ],
-              ]
+            'index' => 'lot',
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            //['match' => ['tender_name_ru' => 'кирпич']],
+                            //['match' => ['tender_description' => 'кирпич']],
+                        ],
+                        'must_not' => [
+                            //['match' => ['lot_description' => 'работев']],
+                            //['match' => ['description' => 'zabor1']],
+                        ],
+                        'should' => [
+                            //['match' => ['lot_description' => 'кирпичу']],
+                            //['match' => ['description' => 'zabor']],
+                        ],
+                        'filter' => [
+                            //['term' => ['description' => 'moy']],
+                            //['range' => ['publish_date' => [ "gte" => "2015-01-01" ]]]
+                        ],
+                    ]
+                ]
             ]
-          ]
         ];
 
         $items = $client->search($params);
