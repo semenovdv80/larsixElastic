@@ -70,23 +70,28 @@ class SearchController extends Controller
         $params = [
             'index' => 'lot',
             'body' => [
+                "from" => 0,
+                "size" => 10000,
+                //"stored_fields" => [],
                 'query' => [
                     'bool' => [
                         'must' => [
-                            //['match' => ['tender_name_ru' => 'кирпич']],
+                            ['match' => ['tender_name_ru' => 'кирпич']],
+                            ['match' => ['tender_name_ru' => 'пенодиатомитовый']],
                             //['match' => ['tender_description' => 'кирпич']],
                         ],
                         'must_not' => [
-                            //['match' => ['lot_description' => 'работев']],
+                            ['match' => ['lot_name_ru' => 'кп']],
                             //['match' => ['description' => 'zabor1']],
                         ],
                         'should' => [
                             //['match' => ['lot_description' => 'кирпичу']],
-                            //['match' => ['description' => 'zabor']],
+                            //['match' => ['tender_name_ru' => 'Болашак']],
                         ],
                         'filter' => [
                             //['term' => ['description' => 'moy']],
-                            //['range' => ['publish_date' => [ "gte" => "2015-01-01" ]]]
+                            ['range' => ['open_date' => [ "gte" => "2018-12-03 12:37:00" ]]],
+                            ['range' => ['open_date' => [ "lte" => "2018-12-05 14:10:00" ]]]
                         ],
                     ]
                 ]

@@ -84,6 +84,14 @@ class Search
                             "type" => "text",
                             "analyzer" => "my_custom_analyzer",
                         ],
+                        "open_date" => [
+                            'type' => 'date',
+                            'format' => 'yyyy-MM-dd HH:mm:ss',
+                        ],
+                        "close_date" => [
+                            'type' => 'date',
+                            'format' => 'yyyy-MM-dd HH:mm:ss',
+                        ],
                     ]
                 ]
             ]
